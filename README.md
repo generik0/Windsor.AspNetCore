@@ -113,3 +113,5 @@ public sealed class CustomMiddleware : ICastleWindsorMiddleware
 }
 ```
 
+Special credit goes to @dotnetjunkie for pioneering the discussions with the ASPNET team for
+non-confirming containers and providing valuable input on issue: https://github.com/castleproject/Windsor/issues/120 
