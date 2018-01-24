@@ -1,0 +1,3 @@
+[submodule "Windsor"]
+	path = Windsor
+	url = git@github.com:fir3pho3nixx/Windsor.git
