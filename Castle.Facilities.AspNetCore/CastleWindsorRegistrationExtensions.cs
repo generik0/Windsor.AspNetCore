@@ -4,6 +4,8 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Castle.Facilities.AspNetCore
@@ -15,19 +17,17 @@ namespace Castle.Facilities.AspNetCore
 		    services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 		    services.AddRequestScopingMiddleware(container.BeginScope);
 		    services.AddCustomControllerActivation(container.Resolve);
+			services.AddCustomTagHelperActivation(container.Resolve);
+			services.AddCustomViewComponentActivation(container.Resolve);
 		    container.Kernel.Resolver.AddSubResolver(new FrameworkConfigurationDependencyResolver(services));
 		}
 
-	    public static void UseCastleWindsor(this IApplicationBuilder app, IWindsorContainer container)
+	    public static void UseCastleWindsor<TStartup>(this IApplicationBuilder app, IWindsorContainer container)
 	    {
-		    var controllerTypes = app.GetControllerTypes();
-		    if (controllerTypes.Any())
-			    container.Register(Component.For(controllerTypes).LifestyleScoped());
-
-		    var viewComponentTypes = app.GetViewComponentTypes();
-		    if (viewComponentTypes.Any())
-			    container.Register(Component.For(viewComponentTypes));
-		}
+		    container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<Controller>().LifestyleScoped());
+		    container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<ViewComponent>().LifestyleScoped());
+		    container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<TagHelper>().LifestyleScoped());
+	    }
 
 	    public static void UseCastleWindsorMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T: class, ICastleWindsorMiddleware
 	    {
