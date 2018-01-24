@@ -9,15 +9,9 @@ namespace Castle.Facilities.AspNetCore
 	{
 		public static void AddRequestScopingMiddleware(this IServiceCollection services, Func<IDisposable> requestScopeProvider)
 		{
-			if (services == null)
-			{
-				throw new ArgumentNullException(nameof(services));
-			}
+			if (services == null) throw new ArgumentNullException(nameof(services));
 
-			if (requestScopeProvider == null)
-			{
-				throw new ArgumentNullException(nameof(requestScopeProvider));
-			}
+			if (requestScopeProvider == null) throw new ArgumentNullException(nameof(requestScopeProvider));
 
 			services.AddSingleton<IStartupFilter>(new RequestScopingStartupFilter(requestScopeProvider));
 		}
@@ -45,7 +39,7 @@ namespace Castle.Facilities.AspNetCore
 			{
 				builder.Use(async (context, next) =>
 				{
-					using (var scope = this.requestScopeProvider())
+					using (var scope = requestScopeProvider())
 					{
 						await next();
 					}

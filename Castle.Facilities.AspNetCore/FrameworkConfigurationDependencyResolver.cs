@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Castle.Core;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
@@ -9,13 +8,13 @@ namespace Castle.Facilities.AspNetCore
 {
 	public class FrameworkConfigurationDependencyResolver : ISubDependencyResolver
 	{
-		private readonly ServiceProvider serviceProvider;
 		private readonly IServiceCollection serviceCollection;
+		private readonly ServiceProvider serviceProvider;
 
 		public FrameworkConfigurationDependencyResolver(IServiceCollection serviceCollection)
 		{
 			this.serviceCollection = serviceCollection;
-			this.serviceProvider = serviceCollection.BuildServiceProvider();
+			serviceProvider = serviceCollection.BuildServiceProvider();
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)

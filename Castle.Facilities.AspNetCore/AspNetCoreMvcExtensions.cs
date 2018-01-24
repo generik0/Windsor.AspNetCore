@@ -37,9 +37,8 @@ namespace Castle.Facilities.AspNetCore
 
 			services.AddSingleton<ITagHelperActivator>(provider =>
 				new DelegatingTagHelperActivator(
-					customCreatorSelector: applicationTypeSelector,
-					customTagHelperCreator: activator,
-					defaultTagHelperActivator:
+					applicationTypeSelector,
+					activator,
 					new DefaultTagHelperActivator(provider.GetRequiredService<ITypeActivatorCache>())));
 		}
 	}

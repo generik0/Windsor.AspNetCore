@@ -15,10 +15,14 @@ namespace Castle.Facilities.AspNetCore.Activators
 			this.viewComponentReleaser = viewComponentReleaser ?? (_ => { });
 		}
 
-		public object Create(ViewComponentContext context) =>
-			this.viewComponentCreator(context.ViewComponentDescriptor.TypeInfo.AsType());
+		public object Create(ViewComponentContext context)
+		{
+			return viewComponentCreator(context.ViewComponentDescriptor.TypeInfo.AsType());
+		}
 
-		public void Release(ViewComponentContext context, object viewComponent) =>
-			this.viewComponentReleaser(viewComponent);
+		public void Release(ViewComponentContext context, object viewComponent)
+		{
+			viewComponentReleaser(viewComponent);
+		}
 	}
 }
