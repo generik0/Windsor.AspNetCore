@@ -9,14 +9,16 @@ The ASPNET Core facility provides Castle Windsor integration using a custom acti
 ## How does it work?
 
 Custom activators are injected into the ASPNET Core framework when the `services.AddCastleWindsor(container)` extension is called
-from the `ConfigureServices(IServiceCollection services)` method in the Startup class. This allows components to be resolved from Windsor 
-when web requests are made to the server. This method also adds a sub resolver for dealing with the resolution of ASPNET Core framework 
+from the `ConfigureServices(IServiceCollection services)` method in the `Startup` class. This allows components to be resolved from Windsor 
+when web requests are made to the server. 
+
+This method also adds a sub resolver for dealing with the resolution of ASPNET Core framework 
 types. An example might be something like an [ILoggerFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=aspnetcore-2.0).
 It is important to note that this extension also injects custom middleware for the management of scoped lifestyles. This middleware calls
 the `WindsorContainer.BeginScope` extension. It will also dispose the scope once the request is completed.
 
 `Controllers`, `ViewComponents` and `TagHelpers` are registered automatically for you when the `app.UseCastleWindsor<Startup>(container)` extension
-is called from the `Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)` method in the Startup class.
+is called from the `Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)` method in the `Startup` class.
 Controllers are registered with a scoped lifestyle, and are assumed to be a single instance for the duration of the web request. The `ViewComponents`
 and `TagHelpers` however are transient. It is assumed that they will called multiple times for a single request and cannot share state. 
 
@@ -113,5 +115,5 @@ public sealed class CustomMiddleware : ICastleWindsorMiddleware
 }
 ```
 
-Special credit goes to @dotnetjunkie for pioneering the discussions with the ASPNET team for
+Special credit goes to [@dotnetjunkie](https://github.com/dotnetjunkie) for pioneering the discussions with the ASPNET team for
 non-confirming containers and providing valuable input on issue: https://github.com/castleproject/Windsor/issues/120 
