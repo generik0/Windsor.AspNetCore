@@ -39,8 +39,8 @@ namespace Castle.Facilities.AspNetCore
 		public static void UseCastleWindsor<TStartup>(this IApplicationBuilder app, IWindsorContainer container)
 		{
 			container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<Controller>().LifestyleScoped());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<ViewComponent>().LifestyleScoped());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<TagHelper>().LifestyleScoped());
+			container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<ViewComponent>().LifestyleTransient());
+			container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<TagHelper>().LifestyleTransient());
 		}
 
 		public static void UseCastleWindsorMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T : class, ICastleWindsorMiddleware
