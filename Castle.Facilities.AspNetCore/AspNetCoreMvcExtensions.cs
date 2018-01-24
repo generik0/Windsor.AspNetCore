@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Castle.Facilities.AspNetCore.Activators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -19,8 +20,7 @@ namespace Castle.Facilities.AspNetCore
 			if (services == null) throw new ArgumentNullException(nameof(services));
 			if (activator == null) throw new ArgumentNullException(nameof(activator));
 
-			services.AddSingleton<IControllerActivator>(new DelegatingControllerActivator(
-				context => activator(context.ActionDescriptor.ControllerTypeInfo.AsType())));
+			services.AddSingleton<IControllerActivator>(new DelegatingControllerActivator(context => activator(context.ActionDescriptor.ControllerTypeInfo.AsType())));
 		}
 
 		public static void AddCustomViewComponentActivation(this IServiceCollection services, Func<Type, object> activator)
@@ -31,8 +31,7 @@ namespace Castle.Facilities.AspNetCore
 			services.AddSingleton<IViewComponentActivator>(new DelegatingViewComponentActivator(activator));
 		}
 
-		public static void AddCustomTagHelperActivation(this IServiceCollection services, Func<Type, object> activator,
-			Predicate<Type> applicationTypeSelector = null)
+		public static void AddCustomTagHelperActivation(this IServiceCollection services, Func<Type, object> activator, Predicate<Type> applicationTypeSelector = null)
 		{
 			if (services == null) throw new ArgumentNullException(nameof(services));
 			if (activator == null) throw new ArgumentNullException(nameof(activator));
@@ -40,8 +39,7 @@ namespace Castle.Facilities.AspNetCore
 			// There are tag helpers OOTB in MVC. Letting the application container try to create them will fail
 			// because of the dependencies these tag helpers have. This means that OOTB tag helpers need to remain
 			// created by the framework's DefaultTagHelperActivator, hence the selector predicate.
-			applicationTypeSelector =
-				applicationTypeSelector ?? (type => !type.GetTypeInfo().Namespace.StartsWith("Microsoft"));
+			applicationTypeSelector = applicationTypeSelector ?? (type => !type.GetTypeInfo().Namespace.StartsWith("Microsoft"));
 
 			services.AddSingleton<ITagHelperActivator>(provider =>
 				new DelegatingTagHelperActivator(

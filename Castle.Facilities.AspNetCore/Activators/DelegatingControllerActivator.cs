@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace Castle.Facilities.AspNetCore
+namespace Castle.Facilities.AspNetCore.Activators
 {
 	public sealed class DelegatingControllerActivator : IControllerActivator
 	{

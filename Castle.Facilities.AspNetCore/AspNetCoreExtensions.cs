@@ -56,8 +56,7 @@ namespace Castle.Facilities.AspNetCore
 
 			if (context == null)
 			{
-				throw new InvalidOperationException(
-					"No HttpContext. Please make sure this method is called in the context of an active HTTP request.");
+				throw new InvalidOperationException("No HttpContext. Please make sure this method is called in the context of an active HTTP request.");
 			}
 
 			return context.RequestServices;

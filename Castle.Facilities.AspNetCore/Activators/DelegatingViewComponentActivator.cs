@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 
-namespace Castle.Facilities.AspNetCore
+namespace Castle.Facilities.AspNetCore.Activators
 {
 	public sealed class DelegatingViewComponentActivator : IViewComponentActivator
 	{

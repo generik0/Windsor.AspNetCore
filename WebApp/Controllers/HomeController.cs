@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using Microsoft.Extensions.Logging;
 using WebApp.Models;
 
 namespace WebApp.Controllers
@@ -11,10 +9,14 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
 	    private readonly IUserService userService;
+	    private readonly ILoggerFactory loggerFactory;
+	    private readonly IViewBufferScope viewBufferScope;
 
-	    public HomeController(IUserService userService)
+	    public HomeController(IUserService userService, ILoggerFactory loggerFactory, IViewBufferScope viewBufferScope)
 	    {
 		    this.userService = userService;
+		    this.loggerFactory = loggerFactory;
+		    this.viewBufferScope = viewBufferScope;
 	    }
 
 	    public IActionResult Index()

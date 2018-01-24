@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Castle.Facilities.AspNetCore;
-using Castle.MicroKernel.Lifestyle;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -25,6 +23,7 @@ namespace WebApp
 				.AddJsonFile("appsettings.json", true, true)
 				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
 				.AddEnvironmentVariables();
+
 			Configuration = builder.Build();
 		}
 
@@ -35,20 +34,18 @@ namespace WebApp
 		{
 			// Add framework services.
 			services.AddMvc();
-
-			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-			services.AddRequestScopingMiddleware(container.BeginScope);
-			services.AddCustomControllerActivation(container.Resolve);
+			services.AddCastleWindsor(container);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
-			RegisterApplicationComponents(app, loggerFactory);
+			app.UseCastleWindsor(container);
+
+			RegisterApplicationComponents();
 
 			// Add custom middleware
-			app.Use(async (context, next) => { await container.Resolve<CustomMiddleware>().Invoke(context, next); });
+			app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
 
 			app.UseStaticFiles();
 
@@ -60,23 +57,10 @@ namespace WebApp
 			});
 		}
 
-		private void RegisterApplicationComponents(IApplicationBuilder app, ILoggerFactory loggerFactory)
+		private void RegisterApplicationComponents()
 		{
-			// Register application services
-			container.Register(Component.For(app.GetControllerTypes()).LifestyleScoped());
-			// container.Register(Component.For(app.GetApplicationViewComponents()));
-
+			// Custom registrations
 			container.Register(Component.For<IUserService>().ImplementedBy<AspNetUserService>().LifestyleScoped());
-			container.Register(Component.For<CustomMiddleware>());
-
-			// Cross-wire required framework services
-			RegisterFactoryMethod(app.GetRequestService<IViewBufferScope>);
-			container.Register(Component.For<ILoggerFactory>().Instance(loggerFactory));
-		}
-
-		private void RegisterFactoryMethod<T>(Func<T> factory) where T : class
-		{
-			container.Register(Component.For<T>().UsingFactoryMethod(_ => factory()));
 		}
 	}
 
@@ -89,7 +73,7 @@ namespace WebApp
 	}
 
 	// Example of some custom user-defined middleware component.
-	public sealed class CustomMiddleware
+	public sealed class CustomMiddleware : ICastleWindsorMiddleware
 	{
 		private readonly IUserService userService;
 

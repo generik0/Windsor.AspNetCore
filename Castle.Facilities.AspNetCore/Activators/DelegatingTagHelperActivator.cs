@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Castle.Facilities.AspNetCore
+namespace Castle.Facilities.AspNetCore.Activators
 {
 	internal sealed class DelegatingTagHelperActivator : ITagHelperActivator
 	{
