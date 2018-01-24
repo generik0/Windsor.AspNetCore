@@ -26,9 +26,12 @@ If you would like to change the lifestyles of any of these components it is reco
 extension. Instead you can opt for your own conventional registrations like so:
 
 ```csharp
-container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<Controller>().LifestyleScoped());
-container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<ViewComponent>().LifestyleTransient());
-container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<TagHelper>().LifestyleTransient());
+container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly)
+	.BasedOn<Controller>().LifestyleScoped());
+container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly)
+	.BasedOn<ViewComponent>().LifestyleTransient());
+container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly)
+	.BasedOn<TagHelper>().LifestyleTransient());
 ```
 
 It is also very important to note that you should never register any framework services in Windsor. This is handled by the framework for you. In the 
