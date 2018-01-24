@@ -29,6 +29,9 @@ container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assemb
 container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assembly).BasedOn<TagHelper>().LifestyleTransient());
 ```
 
+It is also very important to note that you should never register any framework services in Windsor. This is handled by the framework for you. In the 
+case of ILoggerFactory mentioned earlier, you will notice it is not installed anywhere in the Startup.cs example below.
+
 ## What do I need to set it up?
 
 You will need to install the Castle.Facilities.AspNetCore nuget, after which you can add the missing code to your Startup.cs. 
