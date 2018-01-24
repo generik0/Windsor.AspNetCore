@@ -8,8 +8,7 @@ namespace Castle.Facilities.AspNetCore.Activators
 		private readonly Func<Type, object> viewComponentCreator;
 		private readonly Action<object> viewComponentReleaser;
 
-		public DelegatingViewComponentActivator(Func<Type, object> viewComponentCreator,
-			Action<object> viewComponentReleaser = null)
+		public DelegatingViewComponentActivator(Func<Type, object> viewComponentCreator, Action<object> viewComponentReleaser = null)
 		{
 			this.viewComponentCreator = viewComponentCreator ?? throw new ArgumentNullException(nameof(viewComponentCreator));
 			this.viewComponentReleaser = viewComponentReleaser ?? (_ => { });
