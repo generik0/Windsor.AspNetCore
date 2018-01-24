@@ -32,7 +32,8 @@ container.Register(Classes.FromAssemblyInThisApplication(typeof(TStartup).Assemb
 ```
 
 It is also very important to note that you should never register any framework services in Windsor. This is handled by the framework for you. In the 
-case of ILoggerFactory mentioned earlier, you will notice it is not installed anywhere in the Startup.cs example below.
+case of [ILoggerFactory](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=aspnetcore-2.0) mentioned earlier, 
+you will notice it is not installed anywhere in the Startup.cs example below.
 
 ## What do I need to set it up?
 
