@@ -31,9 +31,11 @@ namespace WebApp
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
-		{
+		{	
 			// Add framework services.
 			services.AddMvc();
+			services.AddLogging();
+			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
 			services.AddCastleWindsor(container);
 		}
 
@@ -89,4 +91,8 @@ namespace WebApp
 			// Do something after
 		}
 	}
+
+	public interface IOpenGenericService<T> where T : ClosedGenericTypeParameter { }
+	public class OpenGenericService<T> : IOpenGenericService<T> where T: ClosedGenericTypeParameter { }
+	public class ClosedGenericTypeParameter { }
 }

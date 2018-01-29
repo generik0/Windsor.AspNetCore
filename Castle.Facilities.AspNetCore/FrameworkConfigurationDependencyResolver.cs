@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Runtime.CompilerServices;
+
 namespace Castle.Facilities.AspNetCore
 {
 	using System.Linq;
@@ -30,13 +33,47 @@ namespace Castle.Facilities.AspNetCore
 		public FrameworkConfigurationDependencyResolver(IServiceCollection serviceCollection)
 		{
 			this.serviceCollection = serviceCollection;
-			serviceProvider = serviceCollection.BuildServiceProvider();
+			serviceProvider = serviceCollection.BuildServiceProvider(); // This might be to early, Will add a note to the docs.
 		}
 
 		public bool CanResolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
 		{
 			var dependencyType = dependency.TargetType;
-			return serviceCollection.Any(x => x.ServiceType == dependencyType);
+
+			// Checking if the dependency type is a generic
+			if (dependencyType.IsGenericType)
+			{
+				// TODO: Generics need further supported definition. Code below should be able to delegate most of the permutations. Performance might also be a consideration here.
+
+				// Demanded service type, unwrapped
+				var dependencyTypeGenericTypeDefinition = dependencyType.GetGenericTypeDefinition();
+
+				// Generics mixed
+				var genericServiceTypes = serviceCollection.Where(x => x.ServiceType.IsGenericType).ToList();
+
+				// Generics exhaustively matching generic type arguments and counts. No palindrome validation.
+				var servicesWithGenericTypeDefinitionsAndParameters = genericServiceTypes.Where(x => x.ServiceType.GenericTypeArguments.Length > 0).ToList();
+				var matchingGenericTypeDefinitions = servicesWithGenericTypeDefinitionsAndParameters.Any(x => x.ServiceType.GetGenericTypeDefinition() == dependencyTypeGenericTypeDefinition && x.ServiceType.GenericTypeArguments.All(sy => dependencyType.GetGenericArguments().Contains(sy)));
+				if (matchingGenericTypeDefinitions)
+					return matchingGenericTypeDefinitions;
+
+				// TODO: Edge cases here
+
+				// Open generic services with open generic implementations. Might need refinement.
+				var servicesWithGenericTypeDefinitionsAndNoParameters = genericServiceTypes.Where(x => x.ServiceType.GenericTypeArguments.Length == 0 && x.ImplementationType.GenericTypeArguments.Length == 0).ToList();
+				matchingGenericTypeDefinitions = servicesWithGenericTypeDefinitionsAndNoParameters.Any(x => x.ServiceType == dependencyTypeGenericTypeDefinition);
+				if (matchingGenericTypeDefinitions)
+					return matchingGenericTypeDefinitions;
+
+				return false;
+			}
+
+			// Going for 1..N scan on all types
+			var canResolveWithoutGenerics = serviceCollection.Any(x => x.ServiceType == dependencyType);
+			if (canResolveWithoutGenerics)
+				return canResolveWithoutGenerics;
+
+			return false;
 		}
 
 		public object Resolve(CreationContext context, ISubDependencyResolver contextHandlerResolver, ComponentModel model, DependencyModel dependency)
