@@ -34,7 +34,7 @@ namespace WebApp
 		{	
 			// Add framework services.
 			services.AddMvc();
-			services.AddLogging();
+			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
 			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
 			services.AddCastleWindsor(container);
 		}
