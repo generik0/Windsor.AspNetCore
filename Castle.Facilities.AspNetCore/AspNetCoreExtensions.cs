@@ -54,7 +54,7 @@ namespace Castle.Facilities.AspNetCore
 			{
 				builder.Use(async (context, next) =>
 				{
-					using (var scope = requestScopeProvider())
+					using (requestScopeProvider())
 					{
 						await next();
 					}

@@ -21,6 +21,6 @@ namespace Castle.Facilities.AspNetCore
 
 	public interface ICastleWindsorMiddleware
 	{
-		Task Invoke(HttpContext context, Func<Task> next);
+		Task InvokeAsync(HttpContext context, Func<Task> next);
 	}
 }

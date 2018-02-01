@@ -14,6 +14,8 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Castle.Facilities.AspNetCore
 {
@@ -80,5 +82,10 @@ namespace Castle.Facilities.AspNetCore
 		{
 			return serviceProvider.GetService(dependency.TargetType);
 		}
+	}
+
+	public interface ICastleWindsorMiddleware
+	{
+		Task Invoke(HttpContext context, Func<Task> next);
 	}
 }
