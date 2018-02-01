@@ -66,12 +66,16 @@ namespace WebApp
 		}
 	}
 
-	public interface IUserService
+	public interface IUserService : IDisposable
 	{
 	}
 
 	public class AspNetUserService : IUserService
 	{
+		public void Dispose()
+		{
+			Console.WriteLine("<- AspNetUserService:Dispose");
+		}
 	}
 
 	// Example of some custom user-defined middleware component.
