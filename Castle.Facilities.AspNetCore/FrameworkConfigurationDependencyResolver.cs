@@ -83,9 +83,4 @@ namespace Castle.Facilities.AspNetCore
 			return serviceProvider.GetService(dependency.TargetType);
 		}
 	}
-
-	public interface ICastleWindsorMiddleware
-	{
-		Task Invoke(HttpContext context, Func<Task> next);
-	}
 }

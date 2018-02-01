@@ -4,8 +4,6 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 	</PropertyGroup>
 
-	<Import Project="..\..\buildscripts\common.props"></Import>
-
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Castle.Facilities.AspNetCore</PackageId>
@@ -25,7 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	  <ProjectReference Include="..\..\Windsor\src\Castle.Windsor\Castle.Windsor.csproj" />
 	</ItemGroup>
 
 </Project>

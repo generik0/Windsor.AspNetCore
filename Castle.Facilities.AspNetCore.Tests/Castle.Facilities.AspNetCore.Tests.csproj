@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Castle.Windsor\Castle.Windsor.csproj" />
+	  <ProjectReference Include="..\..\Windsor\src\Castle.Windsor\Castle.Windsor.csproj" />
 	  <ProjectReference Include="..\Castle.Facilities.AspNetCore\Castle.Facilities.AspNetCore.csproj" />
 	</ItemGroup>
 

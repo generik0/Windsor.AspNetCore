@@ -84,7 +84,7 @@ namespace WebApp
 			this.userService = userService;
 		}
 
-		public async Task Invoke(HttpContext context, Func<Task> next)
+		public async Task InvokeAsync(HttpContext context, Func<Task> next)
 		{
 			// Do something before
 			await next();
