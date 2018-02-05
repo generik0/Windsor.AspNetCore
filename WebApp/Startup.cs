@@ -35,6 +35,7 @@ namespace WebApp
 			// Add framework services.
 			services.AddMvc();
 			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
+			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
 			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
 			services.AddCastleWindsor(container);
 		}
@@ -46,8 +47,11 @@ namespace WebApp
 
 			RegisterApplicationComponents();
 
-			// Add custom middleware
-			app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
+			// Add custom middleware, do this if your middleware use DI from Windsor
+			app.UseResolvableMiddleware<CustomMiddleware>(container);
+
+			// Add framework configured middleware
+			app.UseMiddleware<FrameworkMiddleware>();
 
 			app.UseStaticFiles();
 
@@ -78,8 +82,19 @@ namespace WebApp
 		}
 	}
 
-	// Example of some custom user-defined middleware component.
-	public sealed class CustomMiddleware : ICastleWindsorMiddleware
+	// Example of framework configured middleware component, can't consume types registered in Windsor
+	public class FrameworkMiddleware : IMiddleware
+	{
+		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+		{
+			// Do something before
+			await next(context);
+			// Do something after
+		}
+	}
+
+	// Example of some custom user-defined middleware component. Resolves types from Windsor.
+	public sealed class CustomMiddleware : IMiddleware
 	{
 		private readonly IUserService userService;
 
@@ -88,10 +103,10 @@ namespace WebApp
 			this.userService = userService;
 		}
 
-		public async Task InvokeAsync(HttpContext context, Func<Task> next)
+		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 		{
 			// Do something before
-			await next();
+			await next(context);
 			// Do something after
 		}
 	}

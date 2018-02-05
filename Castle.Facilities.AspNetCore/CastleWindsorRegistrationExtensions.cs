@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Microsoft.AspNetCore.Http;
+
 namespace Castle.Facilities.AspNetCore
 {
 	using System;
@@ -60,18 +62,18 @@ namespace Castle.Facilities.AspNetCore
 		/// <summary>
 		/// For registering middleware that consumes services in the constructor known to Castle Windsor. You can use 
 		/// conventional methods for registering your middleware but then you have to re-register your dependencies
-		/// in the ASP.NET IServiceCollection. This could get quite messy. 
+		/// in the ASP.NET IServiceCollection. You should try and avoid that where ever possible.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="app"></param>
 		/// <param name="container"></param>
-		public static void UseCastleWindsorMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T : class, ICastleWindsorMiddleware
+		public static void UseResolvableMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T : class, IMiddleware
 		{
 			container.Register(Component.For<T>());
 			app.Use(async (context, next) =>
 			{
 				var resolve = container.Resolve<T>();
-				await resolve.InvokeAsync(context, next);
+				await resolve.InvokeAsync(context, async (ctx) => await next());
 			});
 		}
 
