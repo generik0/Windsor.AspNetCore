@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.Logging;
@@ -11,13 +12,15 @@ namespace WebApp.Controllers
     {
 	    private readonly IUserService userService;
 	    private readonly ILoggerFactory loggerFactory;
+	    private readonly IHttpContextAccessor accessor;
 	    private readonly ILogger<HomeController> logger;
 	    private readonly IViewBufferScope viewBufferScope;
 	    private readonly IOpenGenericService<ClosedGenericTypeParameter> closedGenericService;
 
-	    public HomeController(IUserService userService, ILoggerFactory loggerFactory, ILogger<HomeController> logger, IViewBufferScope viewBufferScope, IOpenGenericService<ClosedGenericTypeParameter> closedGenericService)
+	    public HomeController(IHttpContextAccessor accessor, IUserService userService, ILoggerFactory loggerFactory, ILogger<HomeController> logger, IViewBufferScope viewBufferScope, IOpenGenericService<ClosedGenericTypeParameter> closedGenericService)
 	    {
-		    this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+		    this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
+			this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		    this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 		    this.loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
 		    this.viewBufferScope = viewBufferScope ?? throw new ArgumentNullException(nameof(viewBufferScope));

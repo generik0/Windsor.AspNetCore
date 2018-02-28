@@ -37,18 +37,19 @@ namespace WebApp
 			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
 			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
 			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddCastleWindsor(container);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
 		{
-			app.UseCastleWindsor<Startup>(container);
+			app.UseCastleWindsor(container);
 
 			RegisterApplicationComponents();
 
 			// Add custom middleware, do this if your middleware use DI from Windsor
-			app.UseResolvableMiddleware<CustomMiddleware>(container);
+			app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
 
 			// Add framework configured middleware
 			app.UseMiddleware<FrameworkMiddleware>();

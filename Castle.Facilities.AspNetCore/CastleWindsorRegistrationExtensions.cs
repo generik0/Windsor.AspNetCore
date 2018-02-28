@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.AspNetCore.Http;
-
 namespace Castle.Facilities.AspNetCore
 {
 	using System;
 	using System.Linq;
+	using System.Reflection;
 
 	using Castle.Facilities.AspNetCore.Resolvers;
 	using Castle.MicroKernel.Lifestyle;
@@ -25,6 +24,7 @@ namespace Castle.Facilities.AspNetCore
 	using Castle.Windsor;
 
 	using Microsoft.AspNetCore.Builder;
+	using Microsoft.AspNetCore.Http;
 	using Microsoft.AspNetCore.Mvc;
 	using Microsoft.AspNetCore.Razor.TagHelpers;
 	using Microsoft.Extensions.DependencyInjection;
@@ -54,20 +54,37 @@ namespace Castle.Facilities.AspNetCore
 		/// <param name="container">Windsor container to register framework types in</param>
 		public static void UseCastleWindsor<TTypeAssembly>(this IApplicationBuilder app, IWindsorContainer container)
 		{
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<Controller>().LifestyleScoped());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<ViewComponent>().LifestyleTransient());
-			container.Register(Classes.FromAssemblyInThisApplication(typeof(TTypeAssembly).Assembly).BasedOn<TagHelper>().LifestyleTransient());
+			var assembly = typeof(TTypeAssembly).Assembly;
+			UseCastleWindsor(container, assembly);
+		}
+
+		/// <summary>
+		/// Use this to register all Controllers, ViewComponents and TagHelpers. Will register the entry assembly and its referenced items
+		/// </summary>
+		/// <param name="app">Application builder retained as extension</param>
+		/// <param name="container">Windsor container to register framework types in</param>
+		public static void UseCastleWindsor(this IApplicationBuilder app, IWindsorContainer container)
+		{
+			var assembly = Assembly.GetEntryAssembly();
+			UseCastleWindsor(container, assembly);
+		}
+
+		private static void UseCastleWindsor(IWindsorContainer container, Assembly assembly)
+		{
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<Controller>().LifestyleScoped());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<ViewComponent>().LifestyleTransient());
+			container.Register(Classes.FromAssemblyInThisApplication(assembly).BasedOn<TagHelper>().LifestyleTransient());
 		}
 
 		/// <summary>
 		/// For registering middleware that consumes services in the constructor known to Castle Windsor. You can use 
 		/// conventional methods for registering your middleware but then you have to re-register your dependencies
-		/// in the ASP.NET IServiceCollection. You should try and avoid that where ever possible.
+		/// in the ASP.NET IServiceCollection. You should avoid doing this if possible and use this extension instead. 
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="app"></param>
-		/// <param name="container"></param>
-		public static void UseResolvableMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T : class, IMiddleware
+		/// <typeparam name="T">Type of service that implements Microsoft.AspNetCore.Http.IMiddleware</typeparam>
+		/// <param name="app">Application builder</param>
+		/// <param name="container">Windsor container</param>
+		public static void UseCastleWindsorMiddleware<T>(this IApplicationBuilder app, IWindsorContainer container) where T : class, IMiddleware
 		{
 			container.Register(Component.For<T>());
 			app.Use(async (context, next) =>
