@@ -29,11 +29,6 @@ namespace WebApp.Controllers
 
 	    public IActionResult Index()
 	    {
-		    var request = accessor.HttpContext.Request;
-
-		    if (accessor.HttpContext.Items["Foo"] == null)
-			    accessor.HttpContext.Items["Foo"] = "Testing";
-
 			return View();
         }
 

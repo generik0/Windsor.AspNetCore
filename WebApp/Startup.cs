@@ -6,10 +6,9 @@ using Castle.Windsor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 namespace WebApp
@@ -38,9 +37,18 @@ namespace WebApp
 			services.AddMvc();
 			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
 			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
-			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
-			services.AddCastleWindsor(container);
-			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Default removed: https://github.com/aspnet/Announcements/issues/190
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // Makes @inject work
+		    services.AddScoped<IUserService>(p => container.Resolve<IUserService>());
+
+            // Fake framework types
+		    services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
+
+            // Castle Windsor integration, controllers, tag helpers and view components
+		    services.AddCastleWindsor(container);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +58,7 @@ namespace WebApp
 
 			RegisterApplicationComponents();
 
-			// Add custom middleware, do this if your middleware use DI from Windsor
+			// Add custom middleware, do this if your middleware uses DI from Windsor
 			app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
 
 			// Add framework configured middleware
@@ -68,7 +76,7 @@ namespace WebApp
 
 		private void RegisterApplicationComponents()
 		{
-			// Custom registrations
+			// Application registrations
 			container.Register(Component.For<IUserService>().ImplementedBy<AspNetUserService>().LifestyleScoped());
 		}
 	}
