@@ -3,7 +3,16 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, WebApp
 
+
+@* First Approach, little nasty, requires services.AddScoped<IUserService>(p => Container.Resolve<IUserService>()); and Windsor registration *@
 @inject IUserService usr
+
+@* Second Approach, little less nasty, requires only Windsor registration *@
+@{ var user = Injector.Locate<IUserService>(); }
+
+@foreach (var thing in user.GetAll())
+{
+}
 
 @{
 	ViewData["Title"] = "Home Page";
