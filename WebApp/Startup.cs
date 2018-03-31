@@ -13,116 +13,116 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApp
 {
-	public class Startup
-	{
-		private readonly WindsorContainer container = new WindsorContainer();
+    public class Startup
+    {
+        private readonly WindsorContainer container = new WindsorContainer();
 
-		public Startup(IHostingEnvironment env)
-		{
-			var builder = new ConfigurationBuilder()
-				.SetBasePath(env.ContentRootPath)
-				.AddJsonFile("appsettings.json", true, true)
-				.AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-				.AddEnvironmentVariables();
+        public Startup(IHostingEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+                .AddEnvironmentVariables();
 
-			Configuration = builder.Build();
-		}
+            Configuration = builder.Build();
+        }
 
-		public IConfigurationRoot Configuration { get; }
+        public IConfigurationRoot Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{	
-			// Add framework services.
-			services.AddMvc();
-			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
-			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Add framework services.
+            services.AddMvc();
+            services.AddLogging((lb) => lb.AddConsole().AddDebug());
+            services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
 
             // Default removed: https://github.com/aspnet/Announcements/issues/190
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             // Makes @inject work
-		    services.AddScoped<IUserService>(p => container.Resolve<IUserService>());
+            services.AddScoped<IUserService>(p => container.Resolve<IUserService>());
 
             // Fake framework types
-		    services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
+            services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
 
             // Castle Windsor integration, controllers, tag helpers and view components
-		    services.AddCastleWindsor(container);
-		}
+            services.AddCastleWindsor(container);
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-		{
-			app.UseCastleWindsor(container);
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
+            app.UseCastleWindsor(container);
 
-			RegisterApplicationComponents();
+            RegisterApplicationComponents();
 
-			// Add custom middleware, do this if your middleware uses DI from Windsor
-			app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
+            // Add custom middleware, do this if your middleware uses DI from Windsor
+            app.UseCastleWindsorMiddleware<CustomMiddleware>(container);
 
-			// Add framework configured middleware
-			app.UseMiddleware<FrameworkMiddleware>();
+            // Add framework configured middleware
+            app.UseMiddleware<FrameworkMiddleware>();
 
-			app.UseStaticFiles();
+            app.UseStaticFiles();
 
-			app.UseMvc(routes =>
-			{
-				routes.MapRoute(
-					"default",
-					"{controller=Home}/{action=Index}/{id?}");
-			});
-		}
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    "default",
+                    "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
 
-		private void RegisterApplicationComponents()
-		{
-			// Application registrations
-			container.Register(Component.For<IUserService>().ImplementedBy<AspNetUserService>().LifestyleScoped());
-		}
-	}
+        private void RegisterApplicationComponents()
+        {
+            // Application registrations
+            container.Register(Component.For<IUserService>().ImplementedBy<AspNetUserService>().LifestyleScoped());
+        }
+    }
 
-	public interface IUserService : IDisposable
-	{
-	}
+    public interface IUserService : IDisposable
+    {
+    }
 
-	public class AspNetUserService : IUserService
-	{
-		public void Dispose()
-		{
-			Console.WriteLine("<- AspNetUserService:Dispose");
-		}
-	}
+    public class AspNetUserService : IUserService
+    {
+        public void Dispose()
+        {
+            Console.WriteLine("<- AspNetUserService:Dispose");
+        }
+    }
 
-	// Example of framework configured middleware component, can't consume types registered in Windsor
-	public class FrameworkMiddleware : IMiddleware
-	{
-		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-		{
-			// Do something before
-			await next(context);
-			// Do something after
-		}
-	}
+    // Example of framework configured middleware component, can't consume types registered in Windsor
+    public class FrameworkMiddleware : IMiddleware
+    {
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            // Do something before
+            await next(context);
+            // Do something after
+        }
+    }
 
-	// Example of some custom user-defined middleware component. Resolves types from Windsor.
-	public sealed class CustomMiddleware : IMiddleware
-	{
-		private readonly IUserService userService;
+    // Example of some custom user-defined middleware component. Resolves types from Windsor.
+    public sealed class CustomMiddleware : IMiddleware
+    {
+        private readonly IUserService userService;
 
-		public CustomMiddleware(ILoggerFactory loggerFactory, IUserService userService)
-		{
-			this.userService = userService;
-		}
+        public CustomMiddleware(ILoggerFactory loggerFactory, IUserService userService)
+        {
+            this.userService = userService;
+        }
 
-		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-		{
-			// Do something before
-			await next(context);
-			// Do something after
-		}
-	}
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        {
+            // Do something before
+            await next(context);
+            // Do something after
+        }
+    }
 
-	public interface IOpenGenericService<T> where T : ClosedGenericTypeParameter { }
-	public class OpenGenericService<T> : IOpenGenericService<T> where T: ClosedGenericTypeParameter { }
-	public class ClosedGenericTypeParameter { }
+    public interface IOpenGenericService<T> where T : ClosedGenericTypeParameter { }
+    public class OpenGenericService<T> : IOpenGenericService<T> where T : ClosedGenericTypeParameter { }
+    public class ClosedGenericTypeParameter { }
 }
