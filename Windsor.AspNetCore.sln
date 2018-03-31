@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNetCore", "Castle.Facilities.AspNetCore\Castle.Facilities.AspNetCore.csproj", "{238055BE-1148-4E34-907F-51256692306B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "..\Windsor\src\Castle.Windsor\Castle.Windsor.csproj", "{F79753AF-7E33-45DA-ACB2-F3CECEB534EF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{1E0C3D58-7481-448A-9458-371376663EC2}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
@@ -14,9 +10,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{B39EEF6A-FA57-4F93-8BE1-9C6848596760}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNetCore.Tests", "Castle.Facilities.AspNetCore.Tests\Castle.Facilities.AspNetCore.Tests.csproj", "{F86E05BC-CB12-4923-B5DD-5A165B4D998C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerfApp", "PerfApp\PerfApp.csproj", "{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfApp", "PerfApp\PerfApp.csproj", "{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windsor", "Windsor", "{1289439E-FC1B-48F2-9A14-7BC9C3D33953}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3A5C9EA3-4A49-4CC7-873F-C64E73A6628B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Windsor", "Windsor\src\Castle.Windsor\Castle.Windsor.csproj", "{264241C5-5E3E-45EA-B647-DE801E1740C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Castle.Facilities.AspNetCore", "Windsor\src\Castle.Facilities.AspNetCore\Castle.Facilities.AspNetCore.csproj", "{028AA115-C48B-4A81-918D-8A306A74BA50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,29 +26,30 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{238055BE-1148-4E34-907F-51256692306B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{238055BE-1148-4E34-907F-51256692306B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{238055BE-1148-4E34-907F-51256692306B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{238055BE-1148-4E34-907F-51256692306B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F79753AF-7E33-45DA-ACB2-F3CECEB534EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F79753AF-7E33-45DA-ACB2-F3CECEB534EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F79753AF-7E33-45DA-ACB2-F3CECEB534EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F79753AF-7E33-45DA-ACB2-F3CECEB534EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B39EEF6A-FA57-4F93-8BE1-9C6848596760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B39EEF6A-FA57-4F93-8BE1-9C6848596760}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B39EEF6A-FA57-4F93-8BE1-9C6848596760}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B39EEF6A-FA57-4F93-8BE1-9C6848596760}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F86E05BC-CB12-4923-B5DD-5A165B4D998C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F86E05BC-CB12-4923-B5DD-5A165B4D998C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F86E05BC-CB12-4923-B5DD-5A165B4D998C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F86E05BC-CB12-4923-B5DD-5A165B4D998C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6FEE928-C839-4BFD-9DDF-214B40DC9DB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{264241C5-5E3E-45EA-B647-DE801E1740C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{264241C5-5E3E-45EA-B647-DE801E1740C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{264241C5-5E3E-45EA-B647-DE801E1740C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{264241C5-5E3E-45EA-B647-DE801E1740C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{028AA115-C48B-4A81-918D-8A306A74BA50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{028AA115-C48B-4A81-918D-8A306A74BA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{028AA115-C48B-4A81-918D-8A306A74BA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{028AA115-C48B-4A81-918D-8A306A74BA50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A5C9EA3-4A49-4CC7-873F-C64E73A6628B} = {1289439E-FC1B-48F2-9A14-7BC9C3D33953}
+		{264241C5-5E3E-45EA-B647-DE801E1740C1} = {3A5C9EA3-4A49-4CC7-873F-C64E73A6628B}
+		{028AA115-C48B-4A81-918D-8A306A74BA50} = {3A5C9EA3-4A49-4CC7-873F-C64E73A6628B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A6BAFA1-DFE5-41BB-9878-2D5CA3488D4B}

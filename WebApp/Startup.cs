@@ -6,6 +6,8 @@ using Castle.Windsor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -37,8 +39,8 @@ namespace WebApp
 			services.AddLogging((lb)=> lb.AddConsole().AddDebug());
 			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
 			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
-			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddCastleWindsor(container);
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
