@@ -36,31 +36,23 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddMvc();
+			// Add framework services.
+			services.AddMvc();
             services.AddLogging((lb) => lb.AddConsole().AddDebug());
             services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
-
-            // Default removed: https://github.com/aspnet/Announcements/issues/190
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            // Makes @inject work
-            services.AddScoped<IUserService>(p => Container.Resolve<IUserService>());
 
             // Fake framework types
             services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
 
-            // Castle Windsor integration, controllers, tag helpers and view components
-            services.AddCastleWindsor(Container);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            app.UseCastleWindsor(Container);
+	        // Castle Windsor integration, controllers, tag helpers and view components
+	        services.AddCastleWindsor(Container);
 
             RegisterApplicationComponents();
+        }
 
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        {
             // Add custom middleware, do this if your middleware uses DI from Windsor
             app.UseCastleWindsorMiddleware<CustomMiddleware>(Container);
 
@@ -80,20 +72,21 @@ namespace WebApp
         private void RegisterApplicationComponents()
         {
             // Application registrations
+	        Container.Register(Component.For<IHttpContextAccessor>().ImplementedBy<HttpContextAccessor>());
             Container.Register(Component.For<IUserService>().ImplementedBy<AspNetUserService>().LifestyleScoped());
         }
     }
 
     public interface IUserService : IDisposable
     {
-        IEnumerable<object> GetAll();
+        IEnumerable<string> GetAll();
     }
 
     public class AspNetUserService : IUserService
     {
-        public IEnumerable<object> GetAll()
+        public IEnumerable<string> GetAll()
         {
-            return Enumerable.Empty<object>();
+            return new []{"Hello from @Inject!"};
         }
 
         public void Dispose()
