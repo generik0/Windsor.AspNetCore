@@ -44,6 +44,7 @@ namespace WebApp
 			// Castle Windsor integration, controllers, tag helpers and view components
 			services.AddCastleWindsor(Container);
 
+			// Custom application component registrations
 			RegisterApplicationComponents();
 		}
 
