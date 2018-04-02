@@ -15,16 +15,22 @@ namespace WebApp.Controllers
 	    private readonly IHttpContextAccessor accessor;
 	    private readonly ILogger<HomeController> logger;
 	    private readonly IViewBufferScope viewBufferScope;
-	    private readonly IOpenGenericService<ClosedGenericTypeParameter> closedGenericService;
+	    private readonly OpenGenericService<ClosedGenericTypeParameter> openGeneric;
 
-	    public HomeController(IHttpContextAccessor accessor, IUserService userService, ILoggerFactory loggerFactory, ILogger<HomeController> logger, IViewBufferScope viewBufferScope, IOpenGenericService<ClosedGenericTypeParameter> closedGenericService)
+	    public HomeController(
+		    IHttpContextAccessor accessor, 
+		    IUserService userService, 
+		    ILoggerFactory loggerFactory, 
+		    ILogger<HomeController> logger, 
+		    IViewBufferScope viewBufferScope, 
+		    OpenGenericService<ClosedGenericTypeParameter> openGeneric)
 	    {
 		    this.accessor = accessor ?? throw new ArgumentNullException(nameof(accessor));
 			this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		    this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
 		    this.loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
 		    this.viewBufferScope = viewBufferScope ?? throw new ArgumentNullException(nameof(viewBufferScope));
-		    this.closedGenericService = closedGenericService;
+		    this.openGeneric = openGeneric ?? throw new ArgumentNullException(nameof(openGeneric));
 	    }
 
 	    public IActionResult Index()

@@ -39,7 +39,7 @@ namespace WebApp
 			services.AddSingleton<FrameworkMiddleware>(); // Do this if you don't care about using Windsor
 
 			// Fake framework types
-			services.AddTransient<IOpenGenericService<ClosedGenericTypeParameter>, OpenGenericService<ClosedGenericTypeParameter>>();
+			services.AddTransient(typeof(OpenGenericService<>));
 
 			// Castle Windsor integration, controllers, tag helpers and view components
 			services.AddCastleWindsor(Container);
