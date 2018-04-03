@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebApp.RikTest;
+using WebApp.RikTest.Extensions;
 
 namespace WebApp
 {
@@ -65,6 +67,8 @@ namespace WebApp
 					"default",
 					"{controller=Home}/{action=Index}/{id?}");
 			});
+
+            Container.RunInstallers();
 		}
 
 		private void RegisterApplicationComponents()
